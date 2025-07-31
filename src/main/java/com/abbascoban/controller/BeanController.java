@@ -17,6 +17,6 @@ public class BeanController {
     @GetMapping("/api/bean")
     @ResponseBody
     public String getBeanDto(){
-        return beanConfig.beanDto().getBeanName();
+        return beanConfig.beanDto()+"";
     }
 }
