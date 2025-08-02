@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Model Thymeleaf</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <h1 class="text-primary">Modellist Thymeleaf</h1>
+
+    
+
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">İSİM</th>
+      <th scope="col">SOYİSİM</th>
+      <th scope="col">DEPARTMAN</th>
+        <th scope="col">DURUM</th>
+    </tr>
+  </thead>
+  <tbody  >
+
+       <tr th:each="student : ${model_list}">
+        <td th:text="${student.id}"></td>
+       <td th:text="${student.name}"></td>
+        <td th:text="${student.surname}"></td>
+        <td th:text="${student.branch}"></td>
+        <td th:if="${student.note>=50}" th:text="'Geçti'"></td>
+        <td th:unless="${student.note>=50}" th:text="'Kaldı'"></td>
+    </tr>
+  
+  </tbody>
+</table>
+    
+    <!--<table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Adınız</th>
+          <th scope="col">Soyadınız</th>
+          <th scope="col">Depatman</th>
+        </tr>
+      </thead>
+      <tbody th:each="temp:${model_list}">
+        <tr>
+          <td th:text="${temp.id}"></td>
+        </tr>
+        <tr>
+          <td th:text="${temp.name}"></td>
+        </tr>
+        <tr>
+          <td th:text="${temp.surname}"></td>
+        </tr>
+        <tr>
+          <td th:text="${temp.branch}"></td>
+        </tr>
+      </tbody>
+    </table>-->
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
