@@ -4,6 +4,7 @@ import com.abbascoban.business.dto.EmployeeDto;
 import com.abbascoban.business.services.IEmployeeServices;
 import com.abbascoban.data.entity.EmployeeEntitiy;
 import com.abbascoban.data.repository.EmployeeRepository;
+import com.abbascoban.exception.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class EmployeeServiceImpl implements IEmployeeServices {
     @Override
     public ResponseEntity<EmployeeDto> getEmployeeById(Long id) {
         EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Employee is not found " + id));
+                orElseThrow(() -> new ResourceNotFoundException("Employee is not found " + id));
         EmployeeDto employeeDto = EntityToDto(employeeEntitiy);
         return ResponseEntity.ok(employeeDto);
     }
@@ -50,7 +51,7 @@ public class EmployeeServiceImpl implements IEmployeeServices {
 
     @Override
     public ResponseEntity<Map<String, Boolean>> deleteEmployee(Long id) {
-        EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee is not found by id " + id));
+        EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee is not found "+ id));
         employeeRepository.delete(employeeEntitiy);
         Map<String,Boolean> response= new HashMap<>();
         response.put("deleted",Boolean.TRUE);
