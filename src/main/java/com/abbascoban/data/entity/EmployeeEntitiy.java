@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 @Log4j2
 @Entity
+@Builder
 @Table(name = "employees")
 public class EmployeeEntitiy extends BaseEntitiy {
 
