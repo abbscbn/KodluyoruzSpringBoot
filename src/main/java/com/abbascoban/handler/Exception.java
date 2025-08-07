@@ -13,12 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class Exception<T> {
 
-    private String pathName;
-
-    private String hostName;
-
-    private Date creatTime;
-
     private T message;
 
 }
