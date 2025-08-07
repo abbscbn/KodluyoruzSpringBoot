@@ -4,7 +4,9 @@ import com.abbascoban.business.dto.EmployeeDto;
 import com.abbascoban.business.services.IEmployeeServices;
 import com.abbascoban.data.entity.EmployeeEntitiy;
 import com.abbascoban.data.repository.EmployeeRepository;
-import com.abbascoban.exception.ResourceNotFoundException;
+import com.abbascoban.exception.BaseExcepiton;
+import com.abbascoban.exception.ErrorMessage;
+import com.abbascoban.exception.ErrorMessageType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +37,24 @@ public class EmployeeServiceImpl implements IEmployeeServices {
     @Override
     public ResponseEntity<EmployeeDto> getEmployeeById(Long id) {
         EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Employee is not found " + id));
+                orElseThrow(() -> new BaseExcepiton(new ErrorMessage(ErrorMessageType.NOT_FOUND,"ID: "+id.toString())));
         EmployeeDto employeeDto = EntityToDto(employeeEntitiy);
         return ResponseEntity.ok(employeeDto);
     }
 
     @Override
     public ResponseEntity<EmployeeDto> updatemEmployee(Long id,EmployeeDto employeeDto) {
+
         EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("Employee is not found " + id));
-        BeanUtils.copyProperties(employeeDto,employeeEntitiy);
-        EmployeeEntitiy savedEmployeeEntitiy = employeeRepository.save(employeeEntitiy);
-        return ResponseEntity.ok(EntityToDto(savedEmployeeEntitiy));
+
+         BeanUtils.copyProperties(employeeDto,employeeEntitiy);
+        return ResponseEntity.ok(EntityToDto(employeeRepository.save(employeeEntitiy)));
     }
 
     @Override
     public ResponseEntity<Map<String, Boolean>> deleteEmployee(Long id) {
-        EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee is not found "+ id));
+        EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).orElseThrow(() -> new BaseExcepiton(new ErrorMessage(ErrorMessageType.NOT_FOUND,"ID: "+id.toString())));
         employeeRepository.delete(employeeEntitiy);
         Map<String,Boolean> response= new HashMap<>();
         response.put("deleted",Boolean.TRUE);
