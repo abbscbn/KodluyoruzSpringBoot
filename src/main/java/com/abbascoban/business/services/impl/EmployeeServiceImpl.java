@@ -28,7 +28,6 @@ public class EmployeeServiceImpl implements IEmployeeServices {
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-
         EmployeeEntitiy employeeEntitiy= DtoToEntity(employeeDto); //Dto dan Entiityye çevirme
         EmployeeEntitiy savedEmployee = employeeRepository.save(employeeEntitiy);
         return EntityToDto(savedEmployee);
@@ -46,7 +45,7 @@ public class EmployeeServiceImpl implements IEmployeeServices {
     public ResponseEntity<EmployeeDto> updatemEmployee(Long id,EmployeeDto employeeDto) {
 
         EmployeeEntitiy employeeEntitiy = employeeRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Employee is not found " + id));
+                orElseThrow(() -> new BaseExcepiton(new ErrorMessage(ErrorMessageType.NOT_FOUND,id.toString())));
 
          BeanUtils.copyProperties(employeeDto,employeeEntitiy);
         return ResponseEntity.ok(EntityToDto(employeeRepository.save(employeeEntitiy)));
