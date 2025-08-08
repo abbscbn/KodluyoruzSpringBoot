@@ -7,6 +7,7 @@ import com.abbascoban.data.repository.EmployeeRepository;
 import com.abbascoban.exception.BaseExcepiton;
 import com.abbascoban.exception.ErrorMessage;
 import com.abbascoban.exception.ErrorMessageType;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class EmployeeServiceImpl implements IEmployeeServices {
     @Autowired
     private ModelMapper modelMapper;
 
-
+    @Transactional
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         EmployeeEntitiy employeeEntitiy= DtoToEntity(employeeDto); //Dto dan Entiityye çevirme

@@ -6,6 +6,7 @@
 - Spring Data
 - Spring Security
 - Spring Rest
+- Thymeleaf
 
 ## Lesson Steps
 > Spring MVC
