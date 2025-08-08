@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+//Proje ayakta iken yapılan test
 @SpringBootTest
 class KodluyoruzSpringBootApplicationTests implements ITestCrud {
 
