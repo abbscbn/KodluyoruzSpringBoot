@@ -5,6 +5,9 @@ import com.abbascoban.rootentity.RootEntity;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -47,6 +50,30 @@ public class GlobalHandler {
 
         return  ResponseEntity.badRequest().body(RootEntity.error(errorList,request));
 
+
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<RootEntity<Map<String, ArrayList<String>>>> handlerMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request){
+
+        Map<String, ArrayList<String>> errorList= new HashMap<>();
+
+
+
+        for(ObjectError objError : ex.getBindingResult().getAllErrors()){
+
+            String fieldName = ((FieldError) objError).getField();
+
+            if(errorList.containsKey(fieldName)){
+            errorList.put(fieldName,addToErrorMessageList(errorList.get(fieldName),objError.getDefaultMessage()));
+            }
+            else{
+                errorList.put(fieldName,addToErrorMessageList(new ArrayList<>(),objError.getDefaultMessage()));
+            }
+
+        }
+
+        return ResponseEntity.badRequest().body(RootEntity.error(errorList,request));
 
     }
 

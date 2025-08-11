@@ -28,7 +28,7 @@ public class EmployeeControllerImpl extends RootEntity implements IEmployeeContr
     @GetMapping("/employees/{id}")
     @Override
     public RootEntity<EmployeeDto> getEmployeeById(@PathVariable(name = "id") Long id,WebRequest request) {
-        employeeServices.getEmployeeById(id);
+
         return RootEntity.ok(employeeServices.getEmployeeById(id).getBody(),request);
     }
 
