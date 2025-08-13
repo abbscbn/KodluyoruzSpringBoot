@@ -38,7 +38,7 @@ public class AppConfig {
                if(optional.isPresent()){
                    return optional.get();
                }
-                   throw new BaseExcepiton(new ErrorMessage(ErrorMessageType.NOT_FOUND," BULUNAMADI"));
+                throw new BaseExcepiton(new ErrorMessage(ErrorMessageType.USERNAMEORPASSWORDNOTFOUND,"girilen username: "+username));
             }
         };
 
