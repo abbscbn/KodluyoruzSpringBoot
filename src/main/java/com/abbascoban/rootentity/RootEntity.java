@@ -58,6 +58,23 @@ public class RootEntity<T> {
         return rootEntity;
     }
 
+    public static <T> RootEntity<T> error(T error){
+        Exception<T> exception= new Exception<>();
+        RootEntity<T> rootEntity= new RootEntity<>();
+        rootEntity.setHostName(getHostName());
+        rootEntity.setPathName(null);
+        rootEntity.setCreatTime(new Date());
+        rootEntity.setResult(false);
+        rootEntity.setStatus(HttpStatus.UNAUTHORIZED.value());
+        rootEntity.setData(null);
+        exception.setMessage(error);
+        rootEntity.setExceptionMessage(exception);
+        return rootEntity;
+    }
+
+
+
+
     public static String getHostName(){
         try {
             return InetAddress.getLocalHost().getHostName();
