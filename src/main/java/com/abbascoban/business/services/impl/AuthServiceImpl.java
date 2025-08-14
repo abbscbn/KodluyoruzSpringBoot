@@ -46,6 +46,10 @@ public class AuthServiceImpl implements IAuthServices {
         return refreshToken;
     }
 
+    public boolean isTokenExpired(Date date){
+        return new Date().before(date);
+    }
+
 
     @Override
     public AuthResponse authenticate(AuthRequest request) {
@@ -82,6 +86,10 @@ public class AuthServiceImpl implements IAuthServices {
 
         Optional<RefreshToken> optRefreshToken = refreshTokenRepository.findByRefreshToken(request.getRefreshToken());
         if(optRefreshToken.isPresent()){
+
+            if (!isTokenExpired(optRefreshToken.get().getExpiredDate())){
+                throw  new BaseExcepiton(new ErrorMessage(ErrorMessageType.REFRESH_TOKEN_ERROR,""));
+            }
 
             User user = optRefreshToken.get().getUser();
 

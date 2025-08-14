@@ -33,7 +33,7 @@ public class AuthEntryPoint  implements AuthenticationEntryPoint {
         String json = objectMapper.writeValueAsString(error);
         response.getWriter().write(json);
 
-       // response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage());
+
 
 
     }
