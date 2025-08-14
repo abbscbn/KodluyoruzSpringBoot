@@ -20,6 +20,8 @@ public class SecurityConfig {
 
     private static final String REGISTER = "/register";
 
+    private static final String REFRESH="/refreshtoken";
+
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
@@ -34,7 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.csrf().disable()
-                .authorizeHttpRequests(request -> request.requestMatchers(AUTHENTICATE, REGISTER)
+                .authorizeHttpRequests(request -> request.requestMatchers(AUTHENTICATE, REGISTER,REFRESH)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
