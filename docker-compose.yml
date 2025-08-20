@@ -63,5 +63,5 @@ services:
 #    burada iç port ve dışarından hangi portla (yerel hostumuzdan) bağlanacağımızı söylüyoruz iç port zaten application.preperties dosyasında mevcut asıl orası baz alınır
     ports:
       - "8080:8080"
-#    burada da tekrardan servis için olası bir conteynır kapanması durumunda tekrardan başlatmasını belirtiyoruz
+#   burada da tekrardan servis için olası bir conteynır kapanması durumunda tekrardan başlatmasını belirtiyoruz
     restart: unless-stopped
