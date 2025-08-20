@@ -1,0 +1,67 @@
+#docker-compose yazarken birden fazla container ı ayağa kaldırmak isteriz yani aslında bir docker kompozisyonudur bu
+services:
+#  buradaki db ismi servisin adıdır, container adı değil ve image adı da değil docker compose burada network üzerinden diğer servislere erişim için hostname olarak kullanır
+  db:
+#    buradaki image bu host hangi image den oluşacak
+    image: postgres:16
+#    buradaki alan imageden oluşturulacak konteynır adıdıdr
+    container_name: myapp-postgres
+#    burada ortam değişkenlerini dinamik tanımlıyoruz ana dizindeki .env dosyasından çekiyor
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      buradaki port ayarı dışarıdan erişeceğimiz port mapping işlemi benim locakimde 5432 dolu olduğu için 5433 yaptım
+    ports:
+      # Host 5433 -> Container 5432 (çünkü host'ta 5432 zaten dolu)
+      - "5433:5432"
+#    verileri kaybetmemek ve ulaşmak için volume mapping yapıyorum container içindeki işlemleri kendi lokalimdeki yerle mapliyip orada muhafaza etmesini sağlıyorum
+    volumes:
+      # Windows host'a kalıcı yaz, belirttiim dizini yazıyorum ilk başta yani hedef, sonra pg nin ayarlı saklama alanını gösteriyiorum kaynak
+      - "C:/docker/pgdata/myapp:/var/lib/postgresql/data"
+      # (opsiyonel) ilk açılışta SQL çalıştırmak isterseniz buraya .sql/.sh koyun
+      - "./postgres/init:/docker-entrypoint-initdb.d"
+#    docker-compose da healtcheck bir container ın gerçekten hazır olup olmadığını kontrol etmek için kullanılır
+    healthcheck:
+#     pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} KOMUTU POSTGRESQL İN HAZIR OLUP OLMADIĞINI DİNAMİK DEĞİŞKENLERLE TEST EDER EĞER BAĞLANTI KURULABİLİYORSA exit code 0 döner konteyır healty kabul edilir bağlanmazsa exit code 1 döner ve bunu SHELL komutu olarak çalıştır diyor
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+#     her 10 sn yede bir bu komut çalıştırılır komutu
+      interval: 10s
+#      komut 5 sn içinde yanıt vermezse deneme başarısız sayılır
+      timeout: 5s
+#      üst üste 10 kez başarısız olursa eğer conteynır unhealty durumuna düşer, yani postgresql açılırken 100 saniye (10*10) şans veriliyor
+      retries: 10
+#  docker da restart politikası, bir konteynırın kapanması durumunda docker onu tekrardan başlatıp başlatmayacağını belirler, container ın yaşam döngüsünü yönetmeye yarar, sadece sen manuel olarak docker stop diyebilirsin
+    restart: unless-stopped
+#2. servisimiz ve host adı app olan servis
+  app:
+#    burada build diyerek kendi dockerfile mız ile build edeceğimizi söylüyoruz, dockerfile ismi illa Dockerfile olmak zorunda değil Dockerfile.dev vs gibi de yapabiliriz
+    build:
+#      içerik bizim kök dizinimizde onun için . diyerek kök dizini referans veriyoruz.
+      context: .
+#      docker file ismi burada (Dockerfile.dev olsaydı onu verebilirdik)
+      dockerfile: Dockerfile
+#    burada container name i bizim docker dekstopta name olarak görmek ve ayırt etmek için kullanıyoruz.
+    container_name: myapp-app
+#    depends_on öncelik olarak ayağa kaldırmak istediğimiz servisi belirtiyoruz (postgresql)
+    depends_on:
+#      db host name i db olduğu için db diyoruz.
+      db:
+#        burada ilk kaldırılacak olan db servisinin sağlıklı bir şekilde kaldırılması şartıyla bu servisi aktif edeceğimizi söylüyoruz.
+        condition: service_healthy
+#    burada app içerisindeki application.preperties kısmındaki dinamik değişkenleri veriyoruz bunların bazılarını .env dosyasından çekmesi gerekiyor
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # İsterseniz doğrudan aşağıdaki 3 değişkeni de verebilirsiniz:
+      # SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      # SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      # SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+#    burada iç port ve dışarından hangi portla (yerel hostumuzdan) bağlanacağımızı söylüyoruz iç port zaten application.preperties dosyasında mevcut asıl orası baz alınır
+    ports:
+      - "8080:8080"
+#    burada da tekrardan servis için olası bir conteynır kapanması durumunda tekrardan başlatmasını belirtiyoruz
+    restart: unless-stopped
